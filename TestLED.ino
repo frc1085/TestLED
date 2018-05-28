@@ -13,6 +13,11 @@
 // Define the array of leds
 CRGB leds[NUM_LEDS];
 
+// Define a pattern
+#define PATTERN_COUNT 3
+int pattern_start = 0;
+CRGB pattern[PATTERN_COUNT] = { CRGB::Aqua, CRGB::White, CRGB::Black };
+
 void setup() { 
       // Uncomment/edit one of the following lines for your leds arrangement.
        FastLED.addLeds<TM1803, DATA_PIN, RGB>(leds, NUM_LEDS);
@@ -40,6 +45,35 @@ Serial.begin(9600);
 }
 
 void loop() { 
+  animate();
+}
+
+void animate() {
+  // Loop over the pattern starting at the pattern offset
+  int j = pattern_start;
+  for (int i=0;i<NUM_LEDS;i++) {
+    // Set the current light color
+    leds[i] = pattern[j++];
+
+    // If j went over the end of the pattern, set it back to zero
+    if (j == PATTERN_COUNT) {
+      j = 0;
+    }
+  }
+
+  // Show and wait
+  FastLED.show();
+  delay(1000);
+
+  pattern_start++;
+
+  // If pattern_start went over the end of the pattern, set it back to zero
+  if (pattern_start == PATTERN_COUNT) {
+    pattern_start = 0;
+  }
+}
+
+void old_code() {
   // Turn the LED on, then pause
   /*leds[0] = CRGB::Red;
   FastLED.show();
